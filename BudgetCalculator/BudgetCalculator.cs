@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace TennisGame01
+namespace BudgetCalculator
 {
     public class BudgetCalculator
     {
@@ -32,8 +32,8 @@ namespace TennisGame01
                 var firstMonthEndDay = new DateTime(start.Year, start.Month, DateTime.DaysInMonth(start.Year, start.Month));
                 var lastMonthStartDay = new DateTime(end.Year, end.Month, 1);
                 var amount = GetBudgetPerMonth(budgetList,start, firstMonthEndDay) + GetBudgetPerMonth(budgetList, lastMonthStartDay, end);
-                var targetStart = start.AddMonths(1);
-                var targetEnd = end.AddMonths(-1);
+                var targetStart = new DateTime(start.Year, start.Month, 1).AddMonths(1);
+                var targetEnd = new DateTime(end.Year, end.Month, DateTime.DaysInMonth(end.Year, end.Month)).AddMonths(-1);
                 while (targetStart < targetEnd)
                 {
                     amount += budgetList.ContainsKey(targetStart.ToString("yyyyMM")) ? budgetList[targetStart.ToString("yyyyMM")] : 0;
@@ -43,13 +43,6 @@ namespace TennisGame01
 
                 return amount;
             }
-
-            if (!budgetList.ContainsKey(start.ToString("yyyyMM")))
-            {
-                return 0;
-            }
-
-            throw new ArgumentException("bad...");
         }
 
         private decimal GetBudgetPerMonth(Dictionary<string, decimal> budgetList, DateTime start, DateTime end)
