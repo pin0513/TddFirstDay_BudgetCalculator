@@ -25,7 +25,7 @@ namespace BudgetCalculator
             Assert.AreEqual(0, budget);
         }
 
-        BudgetCalculator budgetCalculator = new BudgetCalculator(new TestDataBudgetRepository());
+        BudgetCalculator budgetCalculator = new BudgetCalculator(new TestDataBudgetRepository(null));
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void WrongStartEnd()
@@ -96,22 +96,31 @@ namespace BudgetCalculator
 
     public interface IBudgetRepo
     {
-        Dictionary<string, decimal> GetAll();
+        Dictionary<string, Budget> GetAll();
+    }
+
+    public class Budget
+    {
+        public string YearMonth { get; set; }
+        public int Amount{get;set;}
     }
 
     public class TestDataBudgetRepository : IBudgetRepo
     {
-        public TestDataBudgetRepository()
+        private IList<Budget> _data;
+
+        public TestDataBudgetRepository(IList<Budget> data)
         {
+            _data = data;
         }
 
-        public Dictionary<string, decimal> GetAll()
+        public Dictionary<string, Budget> GetAll()
         {
-            return new Dictionary<string, decimal>()
+            return new Dictionary<string, Budget>()
             {
-                { "201801", 310},
-                { "201803", 620},
-                { "201804", 900},
+                { "201801", new Budget(){Amount = 310, YearMonth = "201801"}},
+                { "201803", new Budget(){Amount = 620, YearMonth = "201803"}},
+                { "201804", new Budget(){Amount = 900, YearMonth = "201804"}},
             };
         }
     }
@@ -122,9 +131,9 @@ namespace BudgetCalculator
         {
         }
 
-        public Dictionary<string, decimal> GetAll()
+        public Dictionary<string, Budget> GetAll()
         {
-            return new Dictionary<string, decimal>();
+            return new Dictionary<string, Budget>();
         }
     }
 }

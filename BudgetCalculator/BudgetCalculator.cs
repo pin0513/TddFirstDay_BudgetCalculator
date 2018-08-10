@@ -36,7 +36,7 @@ namespace BudgetCalculator
                 var targetEnd = new DateTime(end.Year, end.Month, DateTime.DaysInMonth(end.Year, end.Month)).AddMonths(-1);
                 while (targetStart < targetEnd)
                 {
-                    amount += budgetList.ContainsKey(targetStart.ToString("yyyyMM")) ? budgetList[targetStart.ToString("yyyyMM")] : 0;
+                    amount += budgetList.ContainsKey(targetStart.ToString("yyyyMM")) ? budgetList[targetStart.ToString("yyyyMM")].Amount : 0;
                     targetStart = targetStart.AddMonths(1);
 
                 }
@@ -45,15 +45,15 @@ namespace BudgetCalculator
             }
         }
 
-        private decimal GetBudgetPerMonth(Dictionary<string, decimal> budgetList, DateTime start, DateTime end)
+        private decimal GetBudgetPerMonth(Dictionary<string, Budget> budgetList, DateTime start, DateTime end)
         {
             if (budgetList.ContainsKey(start.ToString("yyyyMM")))
             {
                 int dayDiffs = (end - start).Days;
-                var amount = budgetList[start.ToString("yyyyMM")];
+                var amount = budgetList[start.ToString("yyyyMM")].Amount;
 
                 var daysOfMonth = DateTime.DaysInMonth(start.Year, start.Month);
-                return (amount / daysOfMonth) * (dayDiffs + 1);
+                return (amount / (decimal)daysOfMonth) * (dayDiffs + 1);
             }
             else
                 return 0;
