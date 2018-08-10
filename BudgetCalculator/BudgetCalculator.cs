@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BudgetCalculator
 {
@@ -25,18 +26,18 @@ namespace BudgetCalculator
 
             if (start.ToString("yyyyMM") == end.ToString("yyyyMM"))
             {
-                return GetBudgetPerMonth(budgetList, start, end);
+                return GetStartMonthAndEndMonthBudgetAmount(budgetList, start, end);
             }
             else
             {
                 var firstMonthEndDay = new DateTime(start.Year, start.Month, DateTime.DaysInMonth(start.Year, start.Month));
                 var lastMonthStartDay = new DateTime(end.Year, end.Month, 1);
-                var amount = GetBudgetPerMonth(budgetList,start, firstMonthEndDay) + GetBudgetPerMonth(budgetList, lastMonthStartDay, end);
+                var amount = GetStartMonthAndEndMonthBudgetAmount(budgetList,start, firstMonthEndDay) + GetStartMonthAndEndMonthBudgetAmount(budgetList, lastMonthStartDay, end);
                 var targetStart = new DateTime(start.Year, start.Month, 1).AddMonths(1);
                 var targetEnd = new DateTime(end.Year, end.Month, DateTime.DaysInMonth(end.Year, end.Month)).AddMonths(-1);
                 while (targetStart < targetEnd)
                 {
-                    amount += budgetList.ContainsKey(targetStart.ToString("yyyyMM")) ? budgetList[targetStart.ToString("yyyyMM")].Amount : 0;
+                    amount += budgetList.Count(a=>a.YearMonth == targetStart.ToString("yyyyMM"))>0 ? budgetList.Single(a=>a.YearMonth == targetStart.ToString("yyyyMM")).Amount : 0;
                     targetStart = targetStart.AddMonths(1);
 
                 }
@@ -45,15 +46,15 @@ namespace BudgetCalculator
             }
         }
 
-        private decimal GetBudgetPerMonth(Dictionary<string, Budget> budgetList, DateTime start, DateTime end)
+        private decimal GetStartMonthAndEndMonthBudgetAmount(IList<Budget> budgetList, DateTime start, DateTime end)
         {
-            if (budgetList.ContainsKey(start.ToString("yyyyMM")))
+            if (budgetList.Count(a=>a.YearMonth == start.ToString("yyyyMM"))>0)
             {
-                int dayDiffs = (end - start).Days;
-                var amount = budgetList[start.ToString("yyyyMM")].Amount;
+                int dayDiffs = (end - start).Days + 1;
+                var amount = budgetList.Single(a=>a.YearMonth == start.ToString("yyyyMM")).Amount;
 
                 var daysOfMonth = DateTime.DaysInMonth(start.Year, start.Month);
-                return (amount / (decimal)daysOfMonth) * (dayDiffs + 1);
+                return (amount / (decimal)daysOfMonth) * (dayDiffs);
             }
             else
                 return 0;
