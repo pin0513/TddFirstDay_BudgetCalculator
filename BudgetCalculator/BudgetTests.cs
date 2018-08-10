@@ -144,7 +144,7 @@ namespace BudgetCalculator
             Assert.AreEqual(1830, budget);
         }
         [TestMethod]
-        public void CrossmMonthNotBudget()
+        public void CrossMonthSomeHaveBudgetSomeNoBudget()
         {
             IList<Budget> data = new List<Budget>()
             {
