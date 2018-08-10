@@ -43,15 +43,8 @@ namespace BudgetCalculator
         }
 
 
-        private void AmountShouldBe(int expected, DateTime start, DateTime end)
+        private void AmountShouldBe(IList<Budget> data , int expected, DateTime start, DateTime end)
         {
-            IList<Budget> data = new List<Budget>()
-            {
-                new Budget() {Amount = 310, YearMonth = "201801"},
-                new Budget() {Amount = 620, YearMonth = "201803"},
-                new Budget() {Amount = 900, YearMonth = "201804"}
-            };
-
             var budgetCalculator = new BudgetCalculator(new TestDataBudgetRepository(data));
             var budget = budgetCalculator.TotalAmount(start, end);
             Assert.AreEqual(expected, budget);
@@ -83,7 +76,8 @@ namespace BudgetCalculator
             };
 
             var budgetCalculator = new BudgetCalculator(new TestDataBudgetRepository(data));
-            AmountShouldBe(310, new DateTime(2018, 01, 01), new DateTime(2018, 01, 31));
+            var budget = budgetCalculator.TotalAmount(new DateTime(2018, 01, 01), new DateTime(2018, 01, 31));
+            Assert.AreEqual(310, budget);
         }
 
         [TestMethod]
@@ -97,7 +91,8 @@ namespace BudgetCalculator
             };
 
             var budgetCalculator = new BudgetCalculator(new TestDataBudgetRepository(data));
-            AmountShouldBe(20, new DateTime(2018, 01, 01), new DateTime(2018, 01, 02));
+            var budget = budgetCalculator.TotalAmount(new DateTime(2018, 01, 01), new DateTime(2018, 01, 02));
+            Assert.AreEqual(20, budget);
         }
 
 
@@ -112,7 +107,8 @@ namespace BudgetCalculator
             };
 
             var budgetCalculator = new BudgetCalculator(new TestDataBudgetRepository(data));
-            AmountShouldBe(50, new DateTime(2018, 03, 31), new DateTime(2018, 04, 01));
+            var budget = budgetCalculator.TotalAmount(new DateTime(2018, 03, 31), new DateTime(2018, 04, 01));
+            Assert.AreEqual(50, budget);
         }
 
         [TestMethod]
@@ -124,9 +120,10 @@ namespace BudgetCalculator
                 new Budget() {Amount = 620, YearMonth = "201803"},
                 new Budget() {Amount = 900, YearMonth = "201804"}
             };
-
+            
             var budgetCalculator = new BudgetCalculator(new TestDataBudgetRepository(data));
-            AmountShouldBe(720, new DateTime(2018, 1, 31), new DateTime(2018, 4, 3));
+            var budget = budgetCalculator.TotalAmount(new DateTime(2018, 1, 31), new DateTime(2018, 4, 3));
+            Assert.AreEqual(720, budget);
         }
 
         [TestMethod]
