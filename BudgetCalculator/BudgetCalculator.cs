@@ -33,13 +33,12 @@ namespace BudgetCalculator
                 var firstMonthEndDay = new DateTime(start.Year, start.Month, DateTime.DaysInMonth(start.Year, start.Month));
                 var lastMonthStartDay = new DateTime(end.Year, end.Month, 1);
                 var amount = GetStartMonthAndEndMonthBudgetAmount(budgetList,start, firstMonthEndDay) + GetStartMonthAndEndMonthBudgetAmount(budgetList, lastMonthStartDay, end);
-                var targetStart = new DateTime(start.Year, start.Month, 1).AddMonths(1);
-                var targetEnd = new DateTime(end.Year, end.Month, DateTime.DaysInMonth(end.Year, end.Month)).AddMonths(-1);
-                while (targetStart < targetEnd)
+                var middleStart = new DateTime(start.Year, start.Month, 1).AddMonths(1);
+                var middleEnd = new DateTime(end.Year, end.Month, DateTime.DaysInMonth(end.Year, end.Month)).AddMonths(-1);
+                while (middleStart < middleEnd)
                 {
-                    amount += budgetList.Count(a=>a.YearMonth == targetStart.ToString("yyyyMM"))>0 ? budgetList.Single(a=>a.YearMonth == targetStart.ToString("yyyyMM")).Amount : 0;
-                    targetStart = targetStart.AddMonths(1);
-
+                    amount += budgetList.Count(a=>a.YearMonth == middleStart.ToString("yyyyMM"))>0 ? budgetList.Single(a=>a.YearMonth == middleStart.ToString("yyyyMM")).Amount : 0;
+                    middleStart = middleStart.AddMonths(1);
                 }
 
                 return amount;
