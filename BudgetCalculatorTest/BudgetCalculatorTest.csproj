@@ -7,8 +7,8 @@
     <ProjectGuid>{CAD2DA17-BFB3-4B80-9E1D-9E89326B79D3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TennisGame01</RootNamespace>
-    <AssemblyName>TennisGame01</AssemblyName>
+    <RootNamespace>BudgetCalculatorTest</RootNamespace>
+    <AssemblyName>BudgetCalculatorTest</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -48,12 +48,18 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BudgetCalculator.cs" />
-    <Compile Include="BudgetTests.cs" />
+    <Compile Include="BudgetCalculatorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestDataBudgetRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BudgetCalculator\BudgetCalculator.csproj">
+      <Project>{6efad19d-56aa-43b8-9bc1-2186ad88fddc}</Project>
+      <Name>BudgetCalculator</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

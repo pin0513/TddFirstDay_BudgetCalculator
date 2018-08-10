@@ -8,15 +8,8 @@ namespace BudgetCalculator
     /// BudgetTests 的摘要說明
     /// </summary>
     [TestClass]
-    public class BudgetTests
+    public class BudgetCalculatorTests
     {
-        public BudgetTests()
-        {
-            //
-            // TODO: 在此加入建構函式的程式碼
-            //
-        }
-
         [TestMethod]
         public void WithNoBudgetData()
         {
@@ -24,7 +17,6 @@ namespace BudgetCalculator
             var budget = emptyBudgetCalculator.TotalAmount(DateTime.MinValue, DateTime.MinValue);
             Assert.AreEqual(0, budget);
         }
-        
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
@@ -38,12 +30,10 @@ namespace BudgetCalculator
             };
 
             var budgetCalculator = new BudgetCalculator(new TestDataBudgetRepository(data));
-
-            var budget = budgetCalculator.TotalAmount(new DateTime(2018, 12, 31), new DateTime(2017, 12, 31));
+            budgetCalculator.TotalAmount(new DateTime(2018, 12, 31), new DateTime(2017, 12, 31));
         }
 
-
-        private void AmountShouldBe(IList<Budget> data , int expected, DateTime start, DateTime end)
+        private void AmountShouldBe(IList<Budget> data, int expected, DateTime start, DateTime end)
         {
             var budgetCalculator = new BudgetCalculator(new TestDataBudgetRepository(data));
             var budget = budgetCalculator.TotalAmount(start, end);
@@ -60,9 +50,7 @@ namespace BudgetCalculator
                 new Budget() {Amount = 900, YearMonth = "201804"}
             };
 
-            var budgetCalculator = new BudgetCalculator(new TestDataBudgetRepository(data));
-            var budget = budgetCalculator.TotalAmount(new DateTime(2017, 12, 31), new DateTime(2017, 12, 31));
-            Assert.AreEqual(0, budget);
+            AmountShouldBe(data, 0, new DateTime(2017, 12, 31), new DateTime(2017, 12, 31));
         }
 
         [TestMethod]
@@ -74,10 +62,7 @@ namespace BudgetCalculator
                 new Budget() {Amount = 620, YearMonth = "201803"},
                 new Budget() {Amount = 900, YearMonth = "201804"}
             };
-
-            var budgetCalculator = new BudgetCalculator(new TestDataBudgetRepository(data));
-            var budget = budgetCalculator.TotalAmount(new DateTime(2018, 01, 01), new DateTime(2018, 01, 31));
-            Assert.AreEqual(310, budget);
+            AmountShouldBe(data, 310, new DateTime(2018, 01, 01), new DateTime(2018, 01, 31));
         }
 
         [TestMethod]
@@ -90,11 +75,8 @@ namespace BudgetCalculator
                 new Budget() {Amount = 900, YearMonth = "201804"}
             };
 
-            var budgetCalculator = new BudgetCalculator(new TestDataBudgetRepository(data));
-            var budget = budgetCalculator.TotalAmount(new DateTime(2018, 01, 01), new DateTime(2018, 01, 02));
-            Assert.AreEqual(20, budget);
+            AmountShouldBe(data, 20, new DateTime(2018, 01, 01), new DateTime(2018, 01, 02));
         }
-
 
         [TestMethod]
         public void CrossMonthHaveBudget()
@@ -106,9 +88,7 @@ namespace BudgetCalculator
                 new Budget() {Amount = 900, YearMonth = "201804"}
             };
 
-            var budgetCalculator = new BudgetCalculator(new TestDataBudgetRepository(data));
-            var budget = budgetCalculator.TotalAmount(new DateTime(2018, 03, 31), new DateTime(2018, 04, 01));
-            Assert.AreEqual(50, budget);
+            AmountShouldBe(data, 50, new DateTime(2018, 03, 31), new DateTime(2018, 04, 01));
         }
 
         [TestMethod]
@@ -120,10 +100,7 @@ namespace BudgetCalculator
                 new Budget() {Amount = 620, YearMonth = "201803"},
                 new Budget() {Amount = 900, YearMonth = "201804"}
             };
-            
-            var budgetCalculator = new BudgetCalculator(new TestDataBudgetRepository(data));
-            var budget = budgetCalculator.TotalAmount(new DateTime(2018, 1, 31), new DateTime(2018, 4, 3));
-            Assert.AreEqual(720, budget);
+            AmountShouldBe(data, 720, new DateTime(2018, 1, 31), new DateTime(2018, 4, 3));
         }
 
         [TestMethod]
@@ -135,11 +112,9 @@ namespace BudgetCalculator
                 new Budget() {Amount = 620, YearMonth = "201803"},
                 new Budget() {Amount = 900, YearMonth = "201804"}
             };
-
-            var budgetCalculator = new BudgetCalculator(new TestDataBudgetRepository(data));
-            var budget = budgetCalculator.TotalAmount(new DateTime(2017, 08, 31), new DateTime(2018, 06, 01));
-            Assert.AreEqual(1830, budget);
+            AmountShouldBe(data, 1830, new DateTime(2017, 08, 31), new DateTime(2018, 06, 01));
         }
+
         [TestMethod]
         public void CrossMonthSomeHaveBudgetSomeNoBudget()
         {
@@ -149,11 +124,9 @@ namespace BudgetCalculator
                 new Budget() {Amount = 620, YearMonth = "201803"},
                 new Budget() {Amount = 900, YearMonth = "201804"}
             };
-
-            var budgetCalculator = new BudgetCalculator(new TestDataBudgetRepository(data));
-            var budget = budgetCalculator.TotalAmount(new DateTime(2018, 2, 15), new DateTime(2018, 03, 15));
-            Assert.AreEqual(300, budget);
+            AmountShouldBe(data, 300, new DateTime(2018, 2, 15), new DateTime(2018, 03, 15));
         }
+
         [TestMethod]
         public void OutOfRangBudget()
         {
@@ -163,50 +136,7 @@ namespace BudgetCalculator
                 new Budget() {Amount = 620, YearMonth = "201803"},
                 new Budget() {Amount = 900, YearMonth = "201804"}
             };
-
-            var budgetCalculator = new BudgetCalculator(new TestDataBudgetRepository(data));
-            var budget = budgetCalculator.TotalAmount(new DateTime(2019, 1, 1), new DateTime(2019, 12, 31));
-            Assert.AreEqual(0, budget);
-        }
-
-
-    }
-
-    public interface IBudgetRepo
-    {
-        IList<Budget> GetAll();
-    }
-
-    public class Budget
-    {
-        public string YearMonth { get; set; }
-        public int Amount{get;set;}
-    }
-
-    public class TestDataBudgetRepository : IBudgetRepo
-    {
-        private IList<Budget> _data;
-
-        public TestDataBudgetRepository(IList<Budget> data)
-        {
-            _data = data;
-        }
-
-        public IList<Budget> GetAll()
-        {
-            return _data;
-        }
-    }
-
-    public class EmptyBudgetRepository : IBudgetRepo
-    {
-        public EmptyBudgetRepository()
-        {
-        }
-
-        public IList<Budget> GetAll()
-        {
-            return new List<Budget>();
+            AmountShouldBe(data, 0, new DateTime(2019, 1, 1), new DateTime(2019, 12, 31));
         }
     }
 }
