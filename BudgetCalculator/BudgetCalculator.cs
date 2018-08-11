@@ -26,15 +26,15 @@ namespace BudgetCalculator
 
             if (start.ToString("yyyyMM") == end.ToString("yyyyMM"))
             {
-                return GetStartMonthAndEndMonthBudgetAmount(budgetList, start, end);
+                return CalculatePeriodAmountInMonth(budgetList, start, end);
             }
             else
             {
                 var firstMonthEndDay = new DateTime(start.Year, start.Month, DateTime.DaysInMonth(start.Year, start.Month));
                 var lastMonthStartDay = new DateTime(end.Year, end.Month, 1);
 
-                var startAmount = GetStartMonthAndEndMonthBudgetAmount(budgetList, start, firstMonthEndDay);
-                var lastAmount = GetStartMonthAndEndMonthBudgetAmount(budgetList, lastMonthStartDay, end);
+                var startAmount = CalculatePeriodAmountInMonth(budgetList, start, firstMonthEndDay);
+                var lastAmount = CalculatePeriodAmountInMonth(budgetList, lastMonthStartDay, end);
 
                 var middleAmount = 0;
                 var middleStart = new DateTime(start.Year, start.Month, 1).AddMonths(1);
@@ -49,17 +49,16 @@ namespace BudgetCalculator
             }
         }
 
-        private decimal GetStartMonthAndEndMonthBudgetAmount(IList<Budget> budgetList, DateTime start, DateTime end)
+        private static decimal CalculatePeriodAmountInMonth(IList<Budget> budgetList, DateTime start, DateTime end)
         {
-            if (budgetList.Count(a => a.YearMonth == start.ToString("yyyyMM")) > 0)
+            if (budgetList.Count(a => a.YearMonth == start.ToString("yyyyMM")) <= 0) return 0;
             {
-                int dayDiffs = (end - start).Days + 1;
+                var dayDiffs = (end - start).Days + 1;
                 var amount = budgetList.Single(a => a.YearMonth == start.ToString("yyyyMM")).Amount;
 
                 var daysOfMonth = DateTime.DaysInMonth(start.Year, start.Month);
                 return (amount / (decimal)daysOfMonth) * (dayDiffs);
             }
-            return 0;
         }
     }
 }
